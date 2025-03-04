@@ -8,7 +8,7 @@
     "scripts": {
       "dev": "npm-run-all --parallel dev:*",
       "dev:frontend": "npm run dev -w packages/frontend",
-      "dev:backend": "npm run dev -w packages/backend",
+      "dev:backend": "npm run dev:serve -w packages/backend",
       "build": "npm-run-all --parallel build:*",
       "build:frontend": "npm run build -w packages/frontend",
       "build:backend": "npm run build -w packages/backend"

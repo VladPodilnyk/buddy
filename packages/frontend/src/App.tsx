@@ -1,11 +1,10 @@
-import Chat from './components/chat';
+import {Chat} from './components/Chat';
 
 export const App: React.FC = () => {
   return (
     <div className="App">
-      <h1 className="font-semibold">Fullstack Monorepo</h1>
       <div>
-        <Chat userId="2" receiverId="1" />
+        <Chat userId="1" />
       </div>
     </div>
   )
