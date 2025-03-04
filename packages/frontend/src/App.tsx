@@ -1,29 +1,12 @@
-import { useState } from 'react';
-import { trpc } from './trpc/client';
+import Chat from './components/chat';
 
-function App() {
-  const [greeting, setGreeting] = useState<string | null>(null)
-  
-  const fetchGreeting = async () => {
-    try {
-      const result = await trpc.greeting.query({ name: 'World' });
-      setGreeting(result.greeting);
-    } catch (error) {
-      console.error('Error fetching greeting:', error);
-    }
-  }
-
+export const App: React.FC = () => {
   return (
     <div className="App">
-      <h1>Fullstack Monorepo</h1>
+      <h1 className="font-semibold">Fullstack Monorepo</h1>
       <div>
-        <button onClick={fetchGreeting}>
-          Fetch Greeting
-        </button>
-        {greeting && <p>{greeting}</p>}
+        <Chat userId="2" receiverId="1" />
       </div>
     </div>
   )
 }
-
-export default App
