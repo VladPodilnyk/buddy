@@ -1,11 +1,9 @@
-import {Chat} from './components/Chat';
+import { SimplePageRouter } from './pages/SimplePageRouter';
 
 export const App: React.FC = () => {
   return (
-    <div className="App">
-      <div>
-        <Chat userId="1" />
-      </div>
+    <div className="flex items-center justify-center h-screen">
+        <SimplePageRouter />
     </div>
   )
 }
