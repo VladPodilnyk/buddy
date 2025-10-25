@@ -1,25 +1,20 @@
 # Buddy
 
-This is a simple real-time chat app.
+A simple chat app
 
-### Project structure 📓
-🚧
+🚧 Under construction 🚧
 
-### How to run the app?
+TODOs:
 
-__Using Docker__ 🐳
-🚧
+- [ ] Clean repo a bit, remove unncessary deps before migrating to workers
+- [ ] Prepare new project structure, connect with Cloudflare
+- [ ] deploy UI worker first
 
-__Using NPM__ 📦
-Sorry, as of now there is only a guide how to install it using npm
-Just clone the repo and execute the following commands:
+Approximate new structure:
 
 ```
-cd buddy
-npm install
-npm install -w packages/frontend
-npm install -w packages/backend
-
-npm run dev:container-start -w packages/backend
-npm run dev
+workers/
+--- ui
+--- search
+--- room
 ```
