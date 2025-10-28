@@ -45,5 +45,11 @@
   "assets": {
     "directory": "./dist/client",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "services": [
+    {
+      "binding": "SearchService",
+      "service": "search-service"
+    }
+  ]
 }
