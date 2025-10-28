@@ -6,10 +6,10 @@
     "products": [
       "Workers"
     ],
-    "categories": [],
     "publish": true
   },
   "dependencies": {
+    "hono": "^4.10.3",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
@@ -36,7 +36,8 @@
     "deploy": "wrangler deploy",
     "dev": "vite",
     "lint": "eslint .",
-    "preview": "npm run build && vite preview"
+    "preview": "npm run build && vite preview",
+    "cf-typegen": "wrangler types"
   },
   "type": "module"
 }
