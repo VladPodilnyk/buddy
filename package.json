@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "workers/*"
+    "workers/ui",
+    "workers/search-service"
   ],
   "scripts": {},
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "5.8.3"
   }
 }

@@ -15,7 +15,7 @@
   "services": [
     {
       "binding": "SEARCH_SERVICE",
-      "service": "search-service",
+      "service": "buddy-search-service",
       "entrypoint": "SearchService"
     }
   ]
