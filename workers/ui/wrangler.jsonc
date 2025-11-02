@@ -17,6 +17,10 @@
       "binding": "SEARCH_SERVICE",
       "service": "buddy-search-service",
       "entrypoint": "SearchService"
+    },
+    {
+      "binding": "CHAT_SERVICE",
+      "service": "buddy-chat-room"
     }
   ]
 }

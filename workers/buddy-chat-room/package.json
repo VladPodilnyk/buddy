@@ -1,5 +1,5 @@
 {
-  "name": "buddy-search-service",
+  "name": "buddy-chat-room",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -7,10 +7,6 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest",
     "cf-typegen": "wrangler types"
-  },
-  "devDependencies": {
-    "vitest": "~3.2.0"
   }
 }

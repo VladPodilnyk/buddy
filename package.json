@@ -4,10 +4,14 @@
   "private": true,
   "workspaces": [
     "workers/ui",
-    "workers/search-service"
+    "workers/search-service",
+    "workers/buddy-chat-room"
   ],
   "scripts": {},
   "devDependencies": {
-    "typescript": "5.8.3"
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "@cloudflare/workers-types": "^4.20251014.0",
+    "typescript": "5.8.3",
+    "wrangler": "^4.45.1"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "buddy-chat-room",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-11-01",
+  "migrations": [
+    {
+      "new_sqlite_classes": ["BuddyChatRoom"],
+      "tag": "v1"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "BuddyChatRoom",
+        "name": "BUDDY_CHAT_ROOM"
+      }
+    ]
+  },
+  "observability": {
+    "enabled": true
+  }
+}
