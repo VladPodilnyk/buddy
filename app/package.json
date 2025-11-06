@@ -32,7 +32,7 @@
     "vite": "^6.0.0"
   },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "check": "tsc && vite build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "dev": "vite",

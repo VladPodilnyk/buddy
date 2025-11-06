@@ -7,7 +7,9 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>().get("/api", async (c) => {
-  const id = c.env.rooms.idFromName(new URL(c.req.url).pathname);
+  const pathname = new URL(c.req.url).pathname;
+  console.log("[DEBUG] hit /api", { pathname: pathname });
+  const id = c.env.rooms.idFromName(pathname);
   const stub = c.env.rooms.get(id);
   const result = await stub.sayHello();
   return c.json({ name: result });
