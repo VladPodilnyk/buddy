@@ -14,7 +14,11 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "@cloudflare/workers-types": "^4.20251014.0",
     "@cloudflare/vite-plugin": "1.7.5",
+    "typescript": "5.8.3",
+    "wrangler": "^4.45.1",
     "@eslint/js": "9.29.0",
     "@types/node": "^24.0.4",
     "@types/react": "19.0.10",
