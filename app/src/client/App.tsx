@@ -4,6 +4,7 @@ import viteLogo from "/vite.svg";
 import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
 import honoLogo from "./assets/hono.svg";
 import "./App.css";
+import client from "./api/api";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -44,7 +45,9 @@ function App() {
       <div className="card">
         <button
           onClick={() => {
-            fetch("/api/")
+            //fetch("/api/")
+            client.api
+              .$get()
               .then((res) => res.json() as Promise<{ name: string }>)
               .then((data) => setName(data.name));
           }}

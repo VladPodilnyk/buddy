@@ -5,22 +5,33 @@
   "compatibility_date": "2025-10-08",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "head_sampling_rate": 1
   },
   "upload_source_maps": true,
   "assets": {
     "directory": "./dist/client",
     "not_found_handling": "single-page-application"
-  }
-  // "services": [
-  //   {
-  //     "binding": "SEARCH_SERVICE",
-  //     "service": "buddy-search-service",
-  //     "entrypoint": "SearchService"
-  //   },
-  //   {
-  //     "binding": "CHAT_SERVICE",
-  //     "service": "buddy-chat-room"
-  //   }
-  // ]
+  },
+  "d1_databases": [
+    {
+      "binding": "db",
+      "database_name": "buddy-message-db",
+      "database_id": "4ac3ab8c-c530-4a75-9830-33d1181bab4e"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "rooms",
+        "class_name": "ChatRoomStore"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["ChatRoomStore"],
+      "tag": "v1"
+    }
+  ]
 }
