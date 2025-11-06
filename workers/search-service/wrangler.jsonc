@@ -5,5 +5,12 @@
   "compatibility_date": "2025-10-24",
   "observability": {
     "enabled": true
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "BUDDY_DB",
+      "database_name": "buddy-message-db",
+      "database_id": "4ac3ab8c-c530-4a75-9830-33d1181bab4e"
+    }
+  ]
 }
