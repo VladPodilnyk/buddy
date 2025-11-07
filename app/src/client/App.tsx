@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
@@ -7,8 +7,25 @@ import "./App.css";
 import client from "./api/api";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [name, setName] = useState("unknown");
+  const [message, setMessage] = useState("");
+  const [echoMsgList, setEchoMsgList] = useState<Array<{ value: string }>>([]);
+
+  const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setMessage(event.target.value);
+
+  const onMessageSend = () => {
+    client.echo.$post({ json: { msg: message } });
+  };
+
+  useEffect(() => {
+    const eventSource = new EventSource("/sse");
+    eventSource.onmessage = (event) => {
+      console.log("DEUBG >>> ", event.data);
+      setEchoMsgList((v) => [...v, { value: event.data }]);
+    };
+    return () => eventSource.close();
+  }, []);
 
   return (
     <>
@@ -33,19 +50,7 @@ function App() {
       <h1>Vite + React + Hono + Cloudflare</h1>
       <div className="card">
         <button
-          onClick={() => setCount((count) => count + 1)}
-          aria-label="increment"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className="card">
-        <button
           onClick={() => {
-            //fetch("/api/")
             client.api
               .$get()
               .then((res) => res.json() as Promise<{ name: string }>)
@@ -55,11 +60,16 @@ function App() {
         >
           Name from API is: {name}
         </button>
-        <p>
-          Edit <code>worker/index.ts</code> to change the name
-        </p>
+        <button onClick={onMessageSend}>Send</button>
       </div>
-      <p className="read-the-docs">Click on the logos to learn more</p>
+      <div className="card">
+        <p>Message: </p>
+        <input value={message} onChange={onMessageChange} />
+        <p>Events: </p>
+        {echoMsgList.map((v, index) => (
+          <div id={index.toString()}>{v.value}</div>
+        ))}
+      </div>
     </>
   );
 }
