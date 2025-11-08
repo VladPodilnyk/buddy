@@ -11,6 +11,40 @@ export class ChatRoomStore extends DurableObject<Env> {
     this.connections = new Set();
   }
 
+  public async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname.endsWith("/connect")) {
+      const { readable, writable } = new TransformStream();
+      const stream = new SSEStreamingApi(writable, readable);
+      this.connections.add(stream);
+
+      const keepAlive = setInterval(() => {
+        stream.write(":\n\n");
+      }, 1000);
+
+      request.signal.addEventListener("abort", () => {
+        clearInterval(keepAlive);
+        this.connections.delete(stream);
+        // not really safe, but for toy-like implementation is good enough
+        writable.close();
+      });
+
+      // Use responseReadable from the stream instead of the original readable
+      // This avoids the "disturbed stream" error
+      return new Response(stream.responseReadable, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        },
+      });
+    }
+
+    return new Response("Not found", { status: 404 });
+  }
+
   public async storeConnection(stream: SSEStreamingApi) {
     this.connections.add(stream);
   }

@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { ChatRoomStore } from "./ChatRoomStore";
-import { streamSSE } from "hono/streaming";
 import { zValidator } from "@hono/zod-validator";
 import { userMessageSchema } from "./validation";
 
@@ -12,20 +11,12 @@ type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>()
   .get("/room", async (c) => {
     const roomId = c.env.rooms.newUniqueId().toString();
-    return c.json({ roomId });
+    return c.json({ roomId }, 200);
   })
   .get("/room/:roomId/connect", async (c) => {
-    return streamSSE(c, async (stream) => {
-      const roomId = c.env.rooms.idFromString(c.req.param("roomId"));
-      const stub = c.env.rooms.get(roomId);
-      await stub.storeConnection(stream);
-
-      while (!stream.aborted && !stream.closed) {
-        await stream.sleep(1000);
-      }
-
-      await stub.removeConnection(stream);
-    });
+    const roomId = c.env.rooms.idFromString(c.req.param("roomId"));
+    const stub = c.env.rooms.get(roomId);
+    return stub.fetch(c.req.raw);
   })
   .post("/room/:id/send", zValidator("json", userMessageSchema), async (c) => {
     const roomId = c.env.rooms.idFromString(c.req.param("id"));
