@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import client from "./api/api";
 import { userMessageSchema } from "../worker/validation";
 import { z } from "zod";
+import { UsernamePicker } from "./components/UsernamePicker";
+import { RoomControls } from "./components/RoomControls";
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -11,17 +13,7 @@ function App() {
     Array<z.infer<typeof userMessageSchema>>
   >([]);
 
-  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setUsername(event.target.value);
-
-  const onConnectInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setRoomId(event.target.value);
-
-  const onCreateRoom = async () => {
-    const res = await client.room.$get();
-    const data = await res.json();
-    setRoomId(data.roomId);
-  };
+  const isRoomControlsDisabled = username.length === 0;
 
   const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setMessage(event.target.value);
@@ -41,11 +33,13 @@ function App() {
   };
 
   useEffect(() => {
-    if (roomId.length === 0) {
+    if (roomId.length === 0 || username.length === 0) {
       return;
     }
 
-    const eventSource = new EventSource(`/room/${roomId}/connect`);
+    const eventSource = new EventSource(
+      `/room/${roomId}/connect?param=${username}`
+    );
     eventSource.onmessage = (event) => {
       const data = z.parse(userMessageSchema, JSON.parse(event.data));
       setEchoMsgList((v) => [...v, data]);
@@ -55,19 +49,16 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Buddy chat room</h1>
-      <div className="labeled-input">
-        <p>Username: </p>
-        <input value={username} onChange={onUsernameChange} />
-      </div>
-      <div className="create-room">
+      <h3>Buddy</h3>
+      <UsernamePicker onSave={setUsername} />
+      <RoomControls onConnect={setRoomId} disabled={isRoomControlsDisabled} />
+      {/* <div className="create-room">
         <button onClick={onCreateRoom}>Create</button>
         {roomId && <p>{roomId}</p>}
       </div>
       <div className="labeled-input">
         <p>Connect: </p>
         <input value={roomId} onChange={onConnectInputChange} />
-        {/* <button onClick={onMessageSend}>Connect</button> */}
       </div>
       <div>
         <p>Message: </p>
@@ -79,7 +70,7 @@ function App() {
             {v.username}: {v.message}
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
