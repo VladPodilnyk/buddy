@@ -1,8 +1,8 @@
 {
-  "name": "buddy-ui",
+  "name": "buddy",
   "private": true,
   "cloudflare": {
-    "label": "buddy-ui",
+    "label": "buddy",
     "products": [
       "Workers"
     ],
