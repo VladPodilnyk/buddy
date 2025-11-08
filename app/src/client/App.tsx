@@ -47,8 +47,7 @@ function App() {
 
     const eventSource = new EventSource(`/room/${roomId}/connect`);
     eventSource.onmessage = (event) => {
-      console.log(event);
-      const data = z.parse(userMessageSchema, event.data);
+      const data = z.parse(userMessageSchema, JSON.parse(event.data));
       setEchoMsgList((v) => [...v, data]);
     };
     return () => eventSource.close();

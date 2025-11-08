@@ -45,19 +45,11 @@ export class ChatRoomStore extends DurableObject<Env> {
     return new Response("Not found", { status: 404 });
   }
 
-  public async storeConnection(stream: SSEStreamingApi) {
-    this.connections.add(stream);
-  }
-
-  public async removeConnection(stream: SSEStreamingApi) {
-    this.connections.delete(stream);
-  }
-
   public async broadcast(message: z.infer<typeof userMessageSchema>) {
     for (const stream of this.connections) {
       stream.writeSSE({
-        event: "chat-event",
         data: JSON.stringify(message),
+        id: `${message.username}-${message.timestamp}`,
       });
     }
   }
