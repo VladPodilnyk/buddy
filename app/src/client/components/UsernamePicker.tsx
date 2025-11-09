@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 
 interface UsernamePickerProps {
-  onSave: (value: string) => void;
+  onSave: (value: string | null) => void;
 }
 
 export const UsernamePicker: FC<UsernamePickerProps> = (props) => {
@@ -21,7 +21,7 @@ export const UsernamePicker: FC<UsernamePickerProps> = (props) => {
         return;
       }
 
-      props.onSave(displayValue);
+      props.onSave(displayValue || null);
       setIsEditing(false);
     } else {
       setIsEditing(true);

@@ -9,21 +9,27 @@ import { useListenMessages } from "./hooks/useListenMessages";
 import { ChatMessage } from "../worker/types";
 
 function App() {
-  const [username, setUsername] = useState<string>("");
-  const [roomId, setRoomId] = useState<string>("");
+  const [username, setUsername] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
   const [messageList, setMessageList] = useState<Array<ChatMessage>>([]);
 
-  const isChatRoomDisabled = username.length === 0;
+  const isChatRoomDisabled = username === null;
 
   const onRoomIdUpdate = (value: string) => {
     setRoomId(value);
     setMessageList([]);
   };
 
+  const onRoomExit = () => {
+    setRoomId(null);
+    setMessageList([]);
+  };
+
   const onMessageSend = (message: string) => {
-    if (username.length === 0) {
-      alert("You should set your username first!!!");
+    if (username === null || roomId === null) {
+      return;
     }
+
     client.room[":id"].send.$post({
       param: { id: roomId },
       json: {
@@ -49,7 +55,11 @@ function App() {
     <div className="container">
       <h3>Buddy</h3>
       <UsernamePicker onSave={setUsername} />
-      <RoomControls onConnect={onRoomIdUpdate} disabled={isChatRoomDisabled} />
+      <RoomControls
+        onConnect={onRoomIdUpdate}
+        onExit={onRoomExit}
+        disabled={isChatRoomDisabled}
+      />
       <Chat
         messages={messageList}
         onSend={onMessageSend}

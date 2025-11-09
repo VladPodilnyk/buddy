@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
 interface UseListenMessagesProps {
-  roomId: string;
-  username: string;
+  roomId: string | null;
+  username: string | null;
   onEvent: (event: MessageEvent) => void;
 }
 
@@ -10,7 +10,7 @@ export const useListenMessages = (props: UseListenMessagesProps) => {
   const { roomId, username, onEvent } = props;
 
   useEffect(() => {
-    if (roomId.length === 0 || username.length === 0) {
+    if (roomId === null || username === null) {
       return;
     }
 

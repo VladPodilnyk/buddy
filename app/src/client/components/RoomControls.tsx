@@ -4,6 +4,7 @@ import { useCreateRoom } from "../hooks/useCreateRoom";
 interface RoomControlsProps {
   disabled?: boolean;
   onConnect: (value: string) => void;
+  onExit: () => void;
 }
 
 export const RoomControls: FC<RoomControlsProps> = (props) => {
@@ -27,6 +28,11 @@ export const RoomControls: FC<RoomControlsProps> = (props) => {
     props.onConnect(displayRoomId);
   };
 
+  const onExit = () => {
+    setRoomId("");
+    props.onExit();
+  };
+
   return (
     <div className="room-controls">
       <div className="room-controls-buttons">
@@ -35,6 +41,9 @@ export const RoomControls: FC<RoomControlsProps> = (props) => {
         </button>
         <button onClick={onConnectClick} disabled={props.disabled}>
           Connect
+        </button>
+        <button onClick={onExit} disabled={props.disabled}>
+          Exit
         </button>
       </div>
       <input

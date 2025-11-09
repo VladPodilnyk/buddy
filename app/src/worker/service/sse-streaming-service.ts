@@ -52,8 +52,6 @@ export class SSEStreamingService extends DurableObject<Env> {
     });
     this.connections.set(username, stream);
 
-    // Use responseReadable from the stream instead of the original readable
-    // This avoids the "disturbed stream" error
     return new Response(stream.responseReadable, {
       status: 200,
       headers: {
