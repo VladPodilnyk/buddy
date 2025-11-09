@@ -15,7 +15,7 @@ const app = new Hono<{ Bindings: Bindings }>()
   })
   .get(
     "/room/:roomId/connect",
-    zValidator("param", connectMessageSchema),
+    zValidator("query", connectMessageSchema),
     async (c) => {
       // TODO: implemet init messages fetching
       const roomId = c.env.rooms.idFromString(c.req.param("roomId"));

@@ -57,7 +57,7 @@ export class ChatRoomStore extends DurableObject<Env> {
       clearInterval(keepAlive);
       this.connections.delete(username);
       // not really safe, but for a toy-like implementation is good enough
-      writable.close();
+      stream.close();
     });
 
     // Use responseReadable from the stream instead of the original readable
