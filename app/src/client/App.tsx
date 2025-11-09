@@ -6,13 +6,12 @@ import { UsernamePicker } from "./components/UsernamePicker";
 import { RoomControls } from "./components/RoomControls";
 import { Chat } from "./components/Chat";
 import { useListenMessages } from "./hooks/useListenMessages";
+import { ChatMessage } from "../worker/types";
 
 function App() {
   const [username, setUsername] = useState<string>("");
   const [roomId, setRoomId] = useState<string>("");
-  const [messageList, setMessageList] = useState<
-    Array<z.infer<typeof userMessageSchema>>
-  >([]);
+  const [messageList, setMessageList] = useState<Array<ChatMessage>>([]);
 
   const isChatRoomDisabled = username.length === 0;
 

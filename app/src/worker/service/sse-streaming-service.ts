@@ -1,9 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 import { SSEStreamingApi } from "hono/streaming";
-import { userMessageSchema } from "./validation";
-import z from "zod";
+import { ChatMessage } from "../types";
+import streamingUtils from "../utils/streaming";
 
-export class ChatRoomStore extends DurableObject<Env> {
+export class SSEStreamingService extends DurableObject<Env> {
   private connections: Map<string, SSEStreamingApi>;
 
   constructor(ctx: DurableObjectState, env: Env) {
@@ -19,7 +19,7 @@ export class ChatRoomStore extends DurableObject<Env> {
     return Promise.resolve(new Response("Not found", { status: 404 }));
   }
 
-  public async broadcast(message: z.infer<typeof userMessageSchema>) {
+  public async broadcast(message: ChatMessage) {
     for (const [_, stream] of this.connections.entries()) {
       stream.writeSSE({
         data: JSON.stringify(message),
@@ -45,20 +45,12 @@ export class ChatRoomStore extends DurableObject<Env> {
       );
     }
 
-    const { readable, writable } = new TransformStream();
-    const stream = new SSEStreamingApi(writable, readable);
-    this.connections.set(username, stream);
-
-    const keepAlive = setInterval(() => {
-      stream.write(":\n\n");
-    }, 1000);
-
-    request.signal.addEventListener("abort", () => {
-      clearInterval(keepAlive);
-      this.connections.delete(username);
-      // not really safe, but for a toy-like implementation is good enough
-      stream.close();
+    const stream = streamingUtils.getSSEStreamFromRequest(request, {
+      onClose: () => {
+        this.connections.delete(username);
+      },
     });
+    this.connections.set(username, stream);
 
     // Use responseReadable from the stream instead of the original readable
     // This avoids the "disturbed stream" error

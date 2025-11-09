@@ -1,9 +1,8 @@
 import { FC, useState, useRef, useEffect } from "react";
-import { z } from "zod";
-import { userMessageSchema } from "../../worker/validation";
+import { ChatMessage } from "../../worker/types";
 
 interface ChatProps {
-  messages: Array<z.infer<typeof userMessageSchema>>;
+  messages: Array<ChatMessage>;
   onSend: (message: string) => void;
   disabled?: boolean;
 }

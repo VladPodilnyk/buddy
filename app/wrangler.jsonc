@@ -24,13 +24,13 @@
     "bindings": [
       {
         "name": "rooms",
-        "class_name": "ChatRoomStore"
+        "class_name": "SSEStreamingService"
       }
     ]
   },
   "migrations": [
     {
-      "new_sqlite_classes": ["ChatRoomStore"],
+      "new_sqlite_classes": ["SSEStreamingService"],
       "tag": "v1"
     }
   ]
