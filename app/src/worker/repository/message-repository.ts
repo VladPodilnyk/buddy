@@ -1,5 +1,11 @@
 import { ChatMessage } from "../types";
 
+interface ChatMessageRaw {
+  participant_id: string;
+  message: string;
+  created_at: number;
+}
+
 async function save(
   db: D1Database,
   chatId: string,
@@ -13,8 +19,27 @@ async function save(
     .run();
 }
 
-function fetchLast(numberOfRecords: number): Promise<ChatMessage> {
-  throw new Error("Not implemented");
+async function fetchLast(
+  db: D1Database,
+  chatId: string,
+  numberOfRecords: number
+): Promise<ChatMessage[]> {
+  const data = await db
+    .prepare(
+      `SELECT participant_id, message, created_at FROM messages 
+       WHERE chat_id = ?
+       ORDER BY created_at DESC
+       LIMIT ?
+    `
+    )
+    .bind(chatId, numberOfRecords)
+    .run<ChatMessageRaw>();
+
+  return data.results.reverse().map((v) => ({
+    username: v.participant_id,
+    message: v.message,
+    timestamp: v.created_at,
+  }));
 }
 
 export default { save, fetchLast };

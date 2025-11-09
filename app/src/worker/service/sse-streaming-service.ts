@@ -2,6 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 import { SSEStreamingApi } from "hono/streaming";
 import { ChatMessage } from "../types";
 import streamingUtils from "../utils/streaming";
+import messageRepository from "../repository/message-repository";
 
 export class SSEStreamingService extends DurableObject<Env> {
   private connections: Map<string, SSEStreamingApi>;
@@ -21,10 +22,7 @@ export class SSEStreamingService extends DurableObject<Env> {
 
   public async broadcast(message: ChatMessage) {
     for (const [_, stream] of this.connections.entries()) {
-      stream.writeSSE({
-        data: JSON.stringify(message),
-        id: `${message.username}-${message.timestamp}`,
-      });
+      this.streamMessage(stream, message);
     }
   }
 
@@ -53,6 +51,8 @@ export class SSEStreamingService extends DurableObject<Env> {
     });
     this.connections.set(username, stream);
 
+    await this.streamRecentMessages(stream);
+
     return new Response(stream.responseReadable, {
       status: 200,
       headers: {
@@ -60,6 +60,36 @@ export class SSEStreamingService extends DurableObject<Env> {
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
       },
+    });
+  }
+
+  private async streamRecentMessages(stream: SSEStreamingApi): Promise<void> {
+    // fetch a few last messages and send them to a user
+    const lastMessages = await messageRepository.fetchLast(
+      this.env.db,
+      this.ctx.id.toString(),
+      20
+    );
+    this.flush(stream, lastMessages);
+  }
+
+  private async flush(
+    stream: SSEStreamingApi,
+    messages: ChatMessage[]
+  ): Promise<void> {
+    if (messages.length === 0) {
+      return;
+    }
+
+    for (const message of messages) {
+      this.streamMessage(stream, message);
+    }
+  }
+
+  private streamMessage(stream: SSEStreamingApi, message: ChatMessage) {
+    stream.writeSSE({
+      data: JSON.stringify(message),
+      id: `${message.username}-${message.timestamp}`,
     });
   }
 }
