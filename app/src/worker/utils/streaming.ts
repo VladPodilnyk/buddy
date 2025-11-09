@@ -12,6 +12,7 @@ function getSSEStreamFromRequest(
   }, 1000);
 
   req.signal.addEventListener("abort", () => {
+    console.log("DAMN!!!!");
     clearInterval(keepAlive);
     modifiers?.onClose();
     // not really safe, but for a toy-like implementation is good enough

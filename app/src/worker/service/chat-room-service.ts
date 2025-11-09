@@ -8,7 +8,10 @@ function generateRoomId(ctx: AppContext): string {
 function getEventStream(ctx: AppContext): Promise<Response> {
   const roomId = ctx.env.rooms.idFromString(ctx.req.param("roomId"));
   const stub = ctx.env.rooms.get(roomId);
-  return stub.fetch(ctx.req.raw);
+  ctx.req.raw.signal.addEventListener("abort", () => {
+    console.log("ABORT WORKER");
+  });
+  return stub.fetch(ctx.req.raw, { signal: ctx.req.raw.signal });
 }
 
 async function sendMessage(

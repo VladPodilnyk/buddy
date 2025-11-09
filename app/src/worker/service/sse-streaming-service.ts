@@ -46,6 +46,7 @@ export class SSEStreamingService extends DurableObject<Env> {
 
     const stream = streamingUtils.getSSEStreamFromRequest(request, {
       onClose: () => {
+        console.log("CLOSE CONNECTON: ", username);
         this.connections.delete(username);
       },
     });
