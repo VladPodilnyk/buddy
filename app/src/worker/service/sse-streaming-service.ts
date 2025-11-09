@@ -26,12 +26,10 @@ export class SSEStreamingService extends DurableObject<Env> {
     }
   }
 
-  // TODO: implemet init messages fetching
   private async establishSSEConnection(
     request: Request,
     params: URLSearchParams
   ): Promise<Response> {
-    // There is not need to validate username here, since it has been done by Hono API.
     const username = params.get("username");
     if (username === null) {
       return new Response("Internal Server Error", { status: 500 });

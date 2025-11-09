@@ -8,8 +8,7 @@ export const useCreateRoom = () => {
       alert("Unexpected error happend when creating a room");
       return null;
     }
-    // TODO: fix type-inference
-    const data: { roomId: string } = await res.json();
+    const data = await res.json();
     return data.roomId;
   }, []);
 
