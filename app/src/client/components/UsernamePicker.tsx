@@ -16,11 +16,6 @@ export const UsernamePicker: FC<UsernamePickerProps> = (props) => {
 
   const onClick = () => {
     if (isEditing) {
-      if (displayValue.length === 0) {
-        alert("Enter username first!");
-        return;
-      }
-
       props.onSave(displayValue || null);
       setIsEditing(false);
     } else {

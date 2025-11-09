@@ -15,6 +15,14 @@ function App() {
 
   const isChatRoomDisabled = username === null;
 
+  const onEditUsername = (value: string | null) => {
+    if (value !== username) {
+      setRoomId(null);
+      setMessageList([]);
+      setUsername(value);
+    }
+  };
+
   const onRoomIdUpdate = (value: string) => {
     setRoomId(value);
     setMessageList([]);
@@ -54,7 +62,7 @@ function App() {
   return (
     <div className="container">
       <h3>Buddy</h3>
-      <UsernamePicker onSave={setUsername} />
+      <UsernamePicker onSave={onEditUsername} />
       <RoomControls
         onConnect={onRoomIdUpdate}
         onExit={onRoomExit}
