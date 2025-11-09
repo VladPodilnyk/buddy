@@ -1,24 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import client from "./api/api";
 import { userMessageSchema } from "../worker/validation";
 import { z } from "zod";
 import { UsernamePicker } from "./components/UsernamePicker";
 import { RoomControls } from "./components/RoomControls";
+import { Chat } from "./components/Chat";
+import { useListenMessages } from "./hooks/useListenMessages";
 
 function App() {
   const [username, setUsername] = useState<string>("");
   const [roomId, setRoomId] = useState<string>("");
-  const [message, setMessage] = useState("");
-  const [echoMsgList, setEchoMsgList] = useState<
+  const [messageList, setMessageList] = useState<
     Array<z.infer<typeof userMessageSchema>>
   >([]);
 
-  const isRoomControlsDisabled = username.length === 0;
+  const isChatRoomDisabled = username.length === 0;
 
-  const onMessageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setMessage(event.target.value);
+  const onRoomIdUpdate = (value: string) => {
+    setRoomId(value);
+    setMessageList([]);
+  };
 
-  const onMessageSend = () => {
+  const onMessageSend = (message: string) => {
     if (username.length === 0) {
       alert("You should set your username first!!!");
     }
@@ -32,45 +35,27 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    if (roomId.length === 0 || username.length === 0) {
-      return;
-    }
+  const onMessageReceive = (event: MessageEvent) => {
+    const data = z.parse(userMessageSchema, JSON.parse(event.data));
+    setMessageList((v) => [...v, data]);
+  };
 
-    const eventSource = new EventSource(
-      `/room/${roomId}/connect?param=${username}`
-    );
-    eventSource.onmessage = (event) => {
-      const data = z.parse(userMessageSchema, JSON.parse(event.data));
-      setEchoMsgList((v) => [...v, data]);
-    };
-    return () => eventSource.close();
-  }, [roomId]);
+  useListenMessages({
+    roomId,
+    username,
+    onEvent: onMessageReceive,
+  });
 
   return (
     <div className="container">
       <h3>Buddy</h3>
       <UsernamePicker onSave={setUsername} />
-      <RoomControls onConnect={setRoomId} disabled={isRoomControlsDisabled} />
-      {/* <div className="create-room">
-        <button onClick={onCreateRoom}>Create</button>
-        {roomId && <p>{roomId}</p>}
-      </div>
-      <div className="labeled-input">
-        <p>Connect: </p>
-        <input value={roomId} onChange={onConnectInputChange} />
-      </div>
-      <div>
-        <p>Message: </p>
-        <input value={message} onChange={onMessageChange} />
-        <button onClick={onMessageSend}>Send</button>
-        <p>Events: </p>
-        {echoMsgList.map((v) => (
-          <div id={`${v.username}-${v.timestamp}`}>
-            {v.username}: {v.message}
-          </div>
-        ))}
-      </div> */}
+      <RoomControls onConnect={onRoomIdUpdate} disabled={isChatRoomDisabled} />
+      <Chat
+        messages={messageList}
+        onSend={onMessageSend}
+        disabled={isChatRoomDisabled}
+      />
     </div>
   );
 }
