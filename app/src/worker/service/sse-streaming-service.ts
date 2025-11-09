@@ -28,6 +28,7 @@ export class SSEStreamingService extends DurableObject<Env> {
     }
   }
 
+  // TODO: implemet init messages fetching
   private async establishSSEConnection(
     request: Request,
     params: URLSearchParams
